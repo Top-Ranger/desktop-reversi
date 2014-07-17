@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/discs">
+        <file>src/ui/0.png</file>
+        <file>src/ui/0changed.png</file>
+        <file>src/ui/1.png</file>
+        <file>src/ui/1changed.png</file>
+        <file>src/ui/2.png</file>
+        <file>src/ui/2changed.png</file>
+    </qresource>
+    <qresource prefix="/icon">
+        <file>desktop-reversi.png</file>
+    </qresource>
+</RCC>
