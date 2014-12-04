@@ -71,11 +71,9 @@ Board::Board(QWidget *parent)
     }
 
     mainLayout = new QVBoxLayout();
-    message = new QLabel("");
     playerMessage = new QLabel("Waiting...");
     mainLayout->addWidget(playerMessage);
     mainLayout->addLayout(grid);
-    mainLayout->addWidget(message);
 
     central = new QWidget();
     central->setLayout(mainLayout);
@@ -110,6 +108,8 @@ Board::Board(QWidget *parent)
     QMenu *about = menubar->addMenu("About");
     about->addAction(aboutReversi);
     about->addAction(aboutQt);
+
+    setFixedSize(minimumSize());
 
     gamemaster.initialise("Human","Human",0);
     gamemaster.startGame();
@@ -261,7 +261,9 @@ void Board::lastChanged(int x, int y)
 
 void Board::getMessage(QString s)
 {
-    message->setText(s);
+    QMessageBox::information(this,
+                             QString("Message"),
+                             s);
 }
 
 void Board::getHumanInput(int i)
@@ -275,7 +277,6 @@ void Board::getHumanInput(int i)
 void Board::finished(int player1, int player2)
 {
     running = false;
-    message->setText(QString(""));
     playerMessage->setText("Finished!");
     QMessageBox::information(this,
                              QString("Result"),

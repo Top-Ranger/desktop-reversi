@@ -77,7 +77,6 @@ private:
     QVBoxLayout *mainLayout;
     QGridLayout *grid;
     QPushButton *buttons[8][8];
-    QLabel *message;
     QLabel *playerMessage;
     QWidget *central;
     QAction *newGame;
