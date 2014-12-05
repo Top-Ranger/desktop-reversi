@@ -27,61 +27,76 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "randomaiplayer.h"
+#include "insanecore.h"
 #include <QTime>
 
-RandomAIPlayer::RandomAIPlayer(QObject *parent) :
-    Player(parent)
+int InsaneCore::_counter = 0;
+
+InsaneCore::InsaneCore() :
+    Core(),
+    _id(++_counter)
 {
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 }
 
-bool RandomAIPlayer::isHuman()
+bool InsaneCore::retirement(Gameboard board, int player)
 {
-    return false;
+    return (qrand()%2 == 0);
 }
 
-void RandomAIPlayer::doTurn(Gameboard board, int player)
+int InsaneCore::mistrust(float const* const* const vote, Gameboard board, int player)
 {
-    int random = qrand()%10;
+    return (qrand()%60 == 0)?Core::_factorSmall:Core::_noMistrust;
+}
 
-    if(random == 0)
-    {
-        emit sendMessage(tr("What am I doing?"));
-    }
-    else
-    {
-        QString s = "";
-        for(int i = 0; i < random; --random)
+void InsaneCore::propose(float ** const vote, Gameboard board, int player)
+{
+    int count = 0;
+    do{
+        for(int i = 0; i < 10 && count < 3; ++i)
         {
-            s = QString("%1%2").arg(s).arg("?");
-        }
-        emit sendMessage(s);
-    }
-
-    int x = qrand()%8;
-    int y = qrand()%8;
-    int xstart = x;
-    int ystart = y;
-
-    do
-    {
-        do
-        {
+            int x = qrand()%8;
+            int y = qrand()%8;
             if(board.play(x,y,player,true))
             {
-                emit turn(x,y);
-                return;
+                vote[x][y] = 1;
+                ++count;
             }
-            y = (y+1)%8;
-        }while(y != ystart);
-
-        x = (x+1)%8;
-    }while(x != xstart);
-
-    emit turn(qrand()%8, qrand()%8);
+        }
+    }while(count == 0);
 }
 
-void RandomAIPlayer::humanInput(int x, int y)
+void InsaneCore::correct(float ** const vote, Gameboard board, int player)
 {
+    for(int x = 0; x < 8; ++x)
+    {
+        for(int y = 0; y < 8; ++y)
+        {
+            if(vote[x][y] != 0)
+            {
+                switch(qrand()%8)
+                {
+                case 0:
+                    vote[x][y] *= Core::_factorSmall;
+                    break;
+                case 1:
+                    vote[x][y] *= Core::_factorLarge;
+                    break;
+                case 2:
+                    vote[x][y] /= Core::_factorSmall;
+                    break;
+                case 3:
+                    vote[x][y] /= Core::_factorLarge;
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+    }
+}
+
+QString InsaneCore::name() const
+{
+    return QString("InsaneCore Nr. %1").arg(_id);
 }

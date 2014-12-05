@@ -27,14 +27,20 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "rule.h"
+#ifndef MOVEMENTCORE_H
+#define MOVEMENTCORE_H
 
-Rule::Rule(QObject *parent) :
-    QObject(parent)
-{
-}
+#include "core.h"
 
-int Rule::opponent(int player)
+class MovementCore : public Core
 {
-    return player==1?2:1;
-}
+public:
+    MovementCore();
+    virtual bool retirement(Gameboard board, int player);
+    virtual int mistrust(float const* const* const vote, Gameboard board, int player);
+    virtual void propose(float ** const vote, Gameboard board, int player);
+    virtual void correct(float ** const vote, Gameboard board, int player);
+    virtual QString name() const;
+};
+
+#endif // MOVEMENTCORE_H

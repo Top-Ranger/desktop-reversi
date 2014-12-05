@@ -37,6 +37,7 @@
 #include "../player/tutorialplayer.h"
 #include "../player/adaptivetreeaiplayer.h"
 #include "../player/controlaiplayer.h"
+#include "../player/assemblyaiplayer.h"
 #include <QDebug>
 
 Gamemaster::Gamemaster(QObject *parent) :
@@ -95,6 +96,10 @@ bool Gamemaster::initialise(QString player1, QString player2, int bonus)
     {
         _player[0] = new ControlAIPlayer(this);
     }
+    else if(player1 == "Assembly AI")
+    {
+        _player[0] = new AssemblyAIPlayer(this);
+    }
     else
     {
         return false;
@@ -102,7 +107,6 @@ bool Gamemaster::initialise(QString player1, QString player2, int bonus)
     QObject::connect(_player[0], SIGNAL(awaitsHuman()), this, SLOT(awaitsHuman()));
     QObject::connect(_player[0], SIGNAL(sendMessage(QString)), this, SLOT(message(QString)));
     QObject::connect(_player[0], SIGNAL(turn(int,int)), this, SLOT(turn(int,int)));
-    QObject::connect(_player[0], SIGNAL(wantBoard()), this, SLOT(wantBoard()));
     QObject::connect(this,SIGNAL(humanInput(int,int)),_player[0],SLOT(humanInput(int,int)));
 
     //Player 2
@@ -142,6 +146,10 @@ bool Gamemaster::initialise(QString player1, QString player2, int bonus)
     {
         _player[1] = new ControlAIPlayer(this);
     }
+    else if(player2 == "Assembly AI")
+    {
+        _player[1] = new AssemblyAIPlayer(this);
+    }
     else
     {
         cleanup();
@@ -150,7 +158,6 @@ bool Gamemaster::initialise(QString player1, QString player2, int bonus)
     QObject::connect(_player[1], SIGNAL(awaitsHuman()), this, SLOT(awaitsHuman()));
     QObject::connect(_player[1], SIGNAL(sendMessage(QString)), this, SLOT(message(QString)));
     QObject::connect(_player[1], SIGNAL(turn(int,int)), this, SLOT(turn(int,int)));
-    QObject::connect(_player[1], SIGNAL(wantBoard()), this, SLOT(wantBoard()));
     QObject::connect(this,SIGNAL(humanInput(int,int)),_player[1],SLOT(humanInput(int,int)));
 
     _bonus = bonus;
@@ -169,8 +176,6 @@ void Gamemaster::getInput(int x, int y)
         qCritical() << "FATAL ERROR in " __FILE__ << " " << __LINE__ << ": Using Gamemaster without initialising it";
         return;
     }
-
-    qDebug() << QString("Gamemaster is getting input %1 + %2").arg(x).arg(y);
     emit humanInput(x, y);
 }
 
@@ -197,7 +202,6 @@ void Gamemaster::cleanup()
 
 void Gamemaster::awaitsHuman()
 {
-    qDebug() << "Gamemaster emits getHumanInput(_turn);";
     emit getHumanInput(_turn);
 }
 
@@ -209,14 +213,8 @@ void Gamemaster::turn(int x, int y)
         return;
     }
 
-    if((x < 0) || (x > 7) || (y < 0) || (y > 7))
-    {
-        qDebug() << QString("Gamemaster is getting turn %1 + %2 from %3").arg(x).arg(y).arg(_turn);
-    }
-
     if(_board->play(x, y, _turn))
     {
-        qDebug() << "Gamemaster: Turn possible!";
         emit lastDiscPlayed(x,y);
         _player[_turn-1]->isActive(false);
         _turn = _turn==1?2:1;
@@ -238,11 +236,7 @@ void Gamemaster::turn(int x, int y)
             _player[_turn-1]->isActive(true);
         }
     }
-    else
-    {
-        qDebug() << "Gamemaster: Turn not possible!";
-    }
-    _player[_turn-1]->doTurn();
+    _player[_turn-1]->doTurn(*_board,_turn);
 }
 
 void Gamemaster::startGame()
@@ -256,10 +250,9 @@ void Gamemaster::startGame()
     if(_board->isTurnPossible(1))
     {
         _turn = 1;
-        qDebug() <<  "Gamemaster starts the game!";
         _player[0]->isActive(true);
         _player[1]->isActive(false);
-        _player[0]->doTurn();
+        _player[0]->doTurn(*_board,_turn);
     }
     else
     {
@@ -299,17 +292,6 @@ int Gamemaster::pointsPlayer2()
     return _board->points(2)+_bonus;
 }
 
-void Gamemaster::wantBoard()
-{
-    if(!_initialised)
-    {
-        qCritical() << "FATAL ERROR in " __FILE__ << " " << __LINE__ << ": Using Gamemaster without initialising it";
-        return;
-    }
-
-    _player[_turn-1]->getBoard(Gameboard(*_board), _turn);
-}
-
 void Gamemaster::message(QString message)
 {
     emit sendMessage(message);
@@ -317,6 +299,5 @@ void Gamemaster::message(QString message)
 
 void Gamemaster::getBoardChanged()
 {
-    qDebug() << "Gamemaster emits boardChanged();";
     emit boardChanged();
 }

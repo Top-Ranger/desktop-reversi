@@ -27,49 +27,25 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef GAMEMASTER_H
-#define GAMEMASTER_H
+#ifndef MINIMISEOPPONENTMOVEMENTRULE_H
+#define MINIMISEOPPONENTMOVEMENTRULE_H
 
-#include <QObject>
-#include "../player/player.h"
-#include "gameboard.h"
+#include "rule.h"
 
-class Gamemaster : public QObject
+class MinimiseOpponentMovementRule : public Rule
 {
     Q_OBJECT
 public:
-    explicit Gamemaster(QObject *parent = 0);
-    ~Gamemaster();
-    Q_INVOKABLE bool initialise(QString player1, QString player2, int bonus);
-    Q_INVOKABLE void getInput(int x, int y);
-    Q_INVOKABLE void cleanup();
-    Q_INVOKABLE void startGame();
-    Q_INVOKABLE int getOwner(int x, int y);
-    Q_INVOKABLE int pointsPlayer1();
-    Q_INVOKABLE int pointsPlayer2();
-
-signals:
-    void humanInput(int x, int y);
-    void getHumanInput(int player);
-    void changeActivePlayer(bool isHuman);
-    void result(int player1, int player2);
-    void sendMessage(QString message);
-    void boardChanged();
-    void lastDiscPlayed(int x, int y);
-
-public slots:
-    void awaitsHuman();
-    void turn(int x, int y);
-    void message(QString message);
-    void getBoardChanged();
+    explicit MinimiseOpponentMovementRule(QObject *parent = 0);
+    virtual bool applicable(Gameboard board, int player);
+    virtual void doTurn(Gameboard board, int player);
+    virtual QString name();
 
 private:
-    Player *_player[2];
-    int _bonus;
-    int _turn;
-    Gameboard *_board;
-    bool _initialised;
-
+    int _x;
+    int _y;
+    bool _asked;
+    static const int _borderMoves = 8; // 8
 };
 
-#endif // GAMEMASTER_H
+#endif // MINIMISEOPPONENTMOVEMENTRULE_H

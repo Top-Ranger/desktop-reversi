@@ -32,7 +32,7 @@
 
 #include <QList>
 #include "player.h"
-#include "../rules/rule.h"
+#include "../player/rules/rule.h"
 
 class StaticRuleAIPlayer : public Player
 {
@@ -40,9 +40,8 @@ class StaticRuleAIPlayer : public Player
 public:
     explicit StaticRuleAIPlayer(QObject *parent = 0);
     ~StaticRuleAIPlayer();
-    virtual void doTurn();
     virtual bool isHuman();
-    virtual void getBoard(Gameboard board, int player);
+    virtual void doTurn(Gameboard board, int player);
 
 public slots:
     virtual void humanInput(int x, int y);

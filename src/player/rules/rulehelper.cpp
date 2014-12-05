@@ -27,49 +27,73 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef GAMEMASTER_H
-#define GAMEMASTER_H
+#include "rulehelper.h"
 
-#include <QObject>
-#include "../player/player.h"
-#include "gameboard.h"
-
-class Gamemaster : public QObject
+bool RuleHelper::isFrontierDisc(Gameboard board, int x, int y)
 {
-    Q_OBJECT
-public:
-    explicit Gamemaster(QObject *parent = 0);
-    ~Gamemaster();
-    Q_INVOKABLE bool initialise(QString player1, QString player2, int bonus);
-    Q_INVOKABLE void getInput(int x, int y);
-    Q_INVOKABLE void cleanup();
-    Q_INVOKABLE void startGame();
-    Q_INVOKABLE int getOwner(int x, int y);
-    Q_INVOKABLE int pointsPlayer1();
-    Q_INVOKABLE int pointsPlayer2();
+    if(board.owner(x,y) == 0)
+    {
+        return false;
+    }
 
-signals:
-    void humanInput(int x, int y);
-    void getHumanInput(int player);
-    void changeActivePlayer(bool isHuman);
-    void result(int player1, int player2);
-    void sendMessage(QString message);
-    void boardChanged();
-    void lastDiscPlayed(int x, int y);
+    for(int deltax=-1; deltax<=1; ++deltax)
+    {
+        for(int deltay=-1; deltay<=1; ++deltay)
+        {
+            if(deltax != 0 || deltay != 0)
+            {
+                if((x+deltax >= 0) && (y+deltay >= 0) && (x+deltax <= 7) && (y+deltay <= 7))
+                {
+                    if(board.owner(x+deltax,y+deltay) == 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
 
-public slots:
-    void awaitsHuman();
-    void turn(int x, int y);
-    void message(QString message);
-    void getBoardChanged();
+bool RuleHelper::canTakeCorner(Gameboard board, int player)
+{
+    if(board.play(0,0,player,true))
+    {
+        return true;
+    }
+    else if(board.play(0,7,player,true))
+    {
+        return true;
+    }
+    else if(board.play(7,0,player,true))
+    {
+        return true;
+    }
+    else if(board.play(7,7,player,true))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
-private:
-    Player *_player[2];
-    int _bonus;
-    int _turn;
-    Gameboard *_board;
-    bool _initialised;
-
-};
-
-#endif // GAMEMASTER_H
+bool RuleHelper::canGetZeroDiscs(Gameboard board, int player)
+{
+    for(int x = 0; x < 8; ++x)
+    {
+        for(int y = 0; y < 8; ++y)
+        {
+            Gameboard testboard = board;
+            if(testboard.play(x,y,opponent(player)))
+            {
+                if(testboard.points(player) == 0)
+                {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}

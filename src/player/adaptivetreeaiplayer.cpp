@@ -30,7 +30,6 @@
 #include "adaptivetreeaiplayer.h"
 #include <QTime>
 #include <limits>
-#include <QDebug>
 
 AdaptiveTreeAIPlayer::AdaptiveTreeAIPlayer(QObject *parent) :
     Player(parent),
@@ -46,17 +45,12 @@ AdaptiveTreeAIPlayer::AdaptiveTreeAIPlayer(QObject *parent) :
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 }
 
-void AdaptiveTreeAIPlayer::doTurn()
-{
-    emit wantBoard();
-}
-
 bool AdaptiveTreeAIPlayer::isHuman()
 {
     return false;
 }
 
-void AdaptiveTreeAIPlayer::getBoard(Gameboard board, int player)
+void AdaptiveTreeAIPlayer::doTurn(Gameboard board, int player)
 {
     float max = -1048576;
     int x = qrand()%8;
@@ -227,11 +221,11 @@ float AdaptiveTreeAIPlayer::calculateScore(Gameboard board, int I, int change, i
 
     if(board.points(I) > board.points(opponent(I)))
     {
-        score += _factorRatio * (board.points(I)/board.points(opponent(I)));
+        score += _factorRatio * (board.points(I)/(board.points(opponent(I))+1));
     }
     else if(board.points(I) < board.points(opponent(I)))
     {
-        score -= _factorRatio * (board.points(I)/board.points(opponent(I)));
+        score -= _factorRatio * (board.points(I)/(board.points(opponent(I))+1));
     }
 
     if(board.owner(0,0) == I)
@@ -908,13 +902,6 @@ void AdaptiveTreeAIPlayer::adjustFactors(Gameboard board, int x, int y, int oppo
     {
         _lonely = _lowerBound;
     }
-
-    qDebug() << "_fewerFrontierDiscs = " << _fewerFrontierDiscs;
-    qDebug() << "_fewerMoves = " << _fewerMoves;
-    qDebug() << "_moreOwnMoves = " << _moreOwnMoves;
-    qDebug() << "_greedy = " << _greedy;
-    qDebug() << "_edge = " << _edge;
-    qDebug() << "_lonely = " << _lonely;
 }
 
 float AdaptiveTreeAIPlayer::calculateFactor(Gameboard board, int x, int y, int opponentValue)

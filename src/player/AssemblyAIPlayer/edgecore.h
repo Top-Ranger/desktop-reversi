@@ -27,27 +27,23 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef MINIMISEOPPONENTMOVEMENTRULE_H
-#define MINIMISEOPPONENTMOVEMENTRULE_H
+#ifndef EDGECORE_H
+#define EDGECORE_H
 
-#include "rule.h"
+#include "core.h"
 
-class MinimiseOpponentMovementRule : public Rule
+class EdgeCore : public Core
 {
-    Q_OBJECT
 public:
-    explicit MinimiseOpponentMovementRule(QObject *parent = 0);
-    virtual bool applicable(Gameboard board, int player);
-    virtual void doTurn(Gameboard board, int player);
-    virtual QString name();
+    EdgeCore();
+    virtual bool retirement(Gameboard board, int player);
+    virtual int mistrust(float const* const* const vote, Gameboard board, int player);
+    virtual void propose(float ** const vote, Gameboard board, int player);
+    virtual void correct(float ** const vote, Gameboard board, int player);
+    virtual QString name() const;
 
 private:
-    bool canTakeCorner(Gameboard board, int player);
-    bool canGetZeroDiscs(Gameboard board, int player);
-    int _x;
-    int _y;
-    bool _asked;
-    static const int _borderMoves = 8; // 8
+    static const int _boarderTokens = 5;
 };
 
-#endif // MINIMISEOPPONENTMOVEMENTRULE_H
+#endif // EDGECORE_H

@@ -20,7 +20,7 @@
    <string>About</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../Resources.qrc">
+   <iconset resource="../../Resources.qrc">
     <normaloff>:/icon/desktop-reversi.png</normaloff>:/icon/desktop-reversi.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -34,7 +34,7 @@
      </property>
      <property name="text">
       <string>desktop-reversi
-Version 0.9</string>
+Version 1.3</string>
      </property>
     </widget>
    </item>
@@ -98,7 +98,7 @@ Version 0.9</string>
   </layout>
  </widget>
  <resources>
-  <include location="../Resources.qrc"/>
+  <include location="../../Resources.qrc"/>
  </resources>
  <connections>
   <connection>

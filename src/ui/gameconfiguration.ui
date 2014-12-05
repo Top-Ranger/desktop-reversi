@@ -14,7 +14,7 @@
    <string>Game Configuration</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../Resources.qrc">
+   <iconset resource="../../Resources.qrc">
     <normaloff>:/icon/desktop-reversi.png</normaloff>:/icon/desktop-reversi.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -70,6 +70,11 @@
      <item>
       <property name="text">
        <string>Control AI</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Assembly AI</string>
       </property>
      </item>
     </widget>
@@ -128,6 +133,11 @@
        <string>Control AI</string>
       </property>
      </item>
+     <item>
+      <property name="text">
+       <string>Assembly AI</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item>
@@ -180,7 +190,7 @@
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../Resources.qrc"/>
+  <include location="../../Resources.qrc"/>
  </resources>
  <connections>
   <connection>

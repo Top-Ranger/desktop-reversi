@@ -27,24 +27,25 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef FEWERFRONTIERDISCSRULE_H
-#define FEWERFRONTIERDISCSRULE_H
+#ifndef MAXIMISEOWNMOVEMENTRULE_H
+#define MAXIMISEOWNMOVEMENTRULE_H
 
 #include "rule.h"
 
-class FewerFrontierDiscsRule : public Rule
+class MaximiseOwnMovementRule : public Rule
 {
     Q_OBJECT
 public:
-    explicit FewerFrontierDiscsRule(QObject *parent = 0);
+    explicit MaximiseOwnMovementRule(QObject *parent = 0);
     virtual bool applicable(Gameboard board, int player);
     virtual void doTurn(Gameboard board, int player);
     virtual QString name();
 
 private:
-    bool isFrontierDisc(Gameboard board, int x, int y);
-    bool canTakeCorner(Gameboard board, int player);
-    bool canGetZeroDiscs(Gameboard board, int player);
+    int _x;
+    int _y;
+    bool _asked;
+    static const int _borderMoves = 15;
 };
 
-#endif // FEWERFRONTIERDISCSRULE_H
+#endif // MAXIMISEOWNMOVEMENTRULE_H

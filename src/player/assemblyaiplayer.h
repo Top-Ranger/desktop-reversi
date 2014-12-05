@@ -27,49 +27,35 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef GAMEMASTER_H
-#define GAMEMASTER_H
+#ifndef ASSEMBLYAIPLAYER_H
+#define ASSEMBLYAIPLAYER_H
 
-#include <QObject>
-#include "../player/player.h"
-#include "gameboard.h"
+#include "player.h"
+#include "AssemblyAIPlayer/core.h"
+#include <QList>
 
-class Gamemaster : public QObject
+class AssemblyAIPlayer : public Player
 {
     Q_OBJECT
 public:
-    explicit Gamemaster(QObject *parent = 0);
-    ~Gamemaster();
-    Q_INVOKABLE bool initialise(QString player1, QString player2, int bonus);
-    Q_INVOKABLE void getInput(int x, int y);
-    Q_INVOKABLE void cleanup();
-    Q_INVOKABLE void startGame();
-    Q_INVOKABLE int getOwner(int x, int y);
-    Q_INVOKABLE int pointsPlayer1();
-    Q_INVOKABLE int pointsPlayer2();
-
-signals:
-    void humanInput(int x, int y);
-    void getHumanInput(int player);
-    void changeActivePlayer(bool isHuman);
-    void result(int player1, int player2);
-    void sendMessage(QString message);
-    void boardChanged();
-    void lastDiscPlayed(int x, int y);
+    explicit AssemblyAIPlayer(QObject *parent = 0);
+    ~AssemblyAIPlayer();
+    virtual bool isHuman();
+    virtual void doTurn(Gameboard board, int player);
 
 public slots:
-    void awaitsHuman();
-    void turn(int x, int y);
-    void message(QString message);
-    void getBoardChanged();
+    virtual void humanInput(int x, int y);
 
 private:
-    Player *_player[2];
-    int _bonus;
-    int _turn;
-    Gameboard *_board;
-    bool _initialised;
+    QList<Core *> _inactiveCores;
+    Core * _activeCore;
 
+    // A core can propose a value between 0-1
+    // A core can correct a value by Core::_factorSmall or Core::_factorLarge
+    float **_vote;
+
+    static const int _maxChanges = 10;
+    static const int _neededToChange = 4;
 };
 
-#endif // GAMEMASTER_H
+#endif // ASSEMBLYAIPLAYER_H

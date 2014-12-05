@@ -31,7 +31,7 @@
 #define RULE_H
 
 #include <QObject>
-#include "../core/gameboard.h"
+#include "../../core/gameboard.h"
 
 class Rule : public QObject
 {
@@ -44,11 +44,6 @@ public:
 
 signals:
     void turn(int x, int y);
-
-public slots:
-
-protected:
-    virtual int opponent(int player);
 };
 
 #endif // RULE_H

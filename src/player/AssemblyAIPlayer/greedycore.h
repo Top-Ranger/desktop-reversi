@@ -27,49 +27,26 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef GAMEMASTER_H
-#define GAMEMASTER_H
+#ifndef GREEDYCORE_H
+#define GREEDYCORE_H
 
-#include <QObject>
-#include "../player/player.h"
-#include "gameboard.h"
+#include "core.h"
 
-class Gamemaster : public QObject
+class GreedyCore : public Core
 {
-    Q_OBJECT
 public:
-    explicit Gamemaster(QObject *parent = 0);
-    ~Gamemaster();
-    Q_INVOKABLE bool initialise(QString player1, QString player2, int bonus);
-    Q_INVOKABLE void getInput(int x, int y);
-    Q_INVOKABLE void cleanup();
-    Q_INVOKABLE void startGame();
-    Q_INVOKABLE int getOwner(int x, int y);
-    Q_INVOKABLE int pointsPlayer1();
-    Q_INVOKABLE int pointsPlayer2();
-
-signals:
-    void humanInput(int x, int y);
-    void getHumanInput(int player);
-    void changeActivePlayer(bool isHuman);
-    void result(int player1, int player2);
-    void sendMessage(QString message);
-    void boardChanged();
-    void lastDiscPlayed(int x, int y);
-
-public slots:
-    void awaitsHuman();
-    void turn(int x, int y);
-    void message(QString message);
-    void getBoardChanged();
+    GreedyCore();
+    virtual bool retirement(Gameboard board, int player);
+    virtual int mistrust(float const* const* const vote, Gameboard board, int player);
+    virtual void propose(float ** const vote, Gameboard board, int player);
+    virtual void correct(float ** const vote, Gameboard board, int player);
+    virtual QString name() const;
 
 private:
-    Player *_player[2];
-    int _bonus;
-    int _turn;
-    Gameboard *_board;
-    bool _initialised;
-
+    // Used in retrirement, mistrust and _factorSmall
+    static const int _lowerBorder = 4;
+    // Used for _factorSmall
+    static const int _upperBorder = 8;
 };
 
-#endif // GAMEMASTER_H
+#endif // GREEDYCORE_H
