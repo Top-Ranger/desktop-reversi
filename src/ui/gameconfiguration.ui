@@ -34,11 +34,6 @@
      </item>
      <item>
       <property name="text">
-       <string>Tutorial</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
        <string>Random AI</string>
       </property>
      </item>
@@ -91,11 +86,6 @@
      <item>
       <property name="text">
        <string>Human</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Tutorial</string>
       </property>
      </item>
      <item>

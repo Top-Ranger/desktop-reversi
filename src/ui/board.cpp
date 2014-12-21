@@ -261,9 +261,11 @@ void Board::lastChanged(int x, int y)
 
 void Board::getMessage(QString s)
 {
+    /* Removed until better solution
     QMessageBox::information(this,
                              QString("Message"),
                              s);
+                             */
 }
 
 void Board::getHumanInput(int i)
