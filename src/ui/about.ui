@@ -41,7 +41,7 @@ Version 1.5</string>
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>  Copyright (C) 2014 Marcus Soll
+      <string>  Copyright (C) 2014,2015 Marcus Soll
   Copyright (C) 2014 Johannes Preuß
   All rights reserved.
 
