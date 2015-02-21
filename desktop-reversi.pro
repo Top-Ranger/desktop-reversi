@@ -53,7 +53,8 @@ SOURCES += src/main.cpp\
     src/player/rules/greedyrule.cpp \
     src/player/rules/fewerfrontierdiscsrule.cpp \
     src/player/rules/endgamerule.cpp \
-    src/player/rules/cornerrule.cpp
+    src/player/rules/cornerrule.cpp \
+    src/player/neuralnetworkaiplayer.cpp
 
 HEADERS  += src/ui/board.h \
     src/core/gamemaster.h \
@@ -93,7 +94,8 @@ HEADERS  += src/ui/board.h \
     src/player/rules/greedyrule.h \
     src/player/rules/fewerfrontierdiscsrule.h \
     src/player/rules/endgamerule.h \
-    src/player/rules/cornerrule.h
+    src/player/rules/cornerrule.h \
+    src/player/neuralnetworkaiplayer.h
 
 FORMS += \
     src/ui/gameconfiguration.ui \
@@ -119,9 +121,13 @@ OTHER_FILES += \
     .gitignore \
     resources.rc \
     LICENSE.txt \
-    README.md
+    README.md \
+    src/player/NeuralNetworkAIPlayer/inputToHidden1.txt \
+    src/player/NeuralNetworkAIPlayer/hidden2ToOutput.txt \
+    src/player/NeuralNetworkAIPlayer/hidden1ToHidden2.txt
 
 RESOURCES += \
-    Resources.qrc
+    Resources.qrc \
+    src/player/NeuralNetworkAIPlayer/NNData.qrc
     
 RC_FILE = resources.rc
