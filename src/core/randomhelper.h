@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014,2015,2016 Marcus Soll
+  Copyright (C) 2016 Marcus Soll
   All rights reserved.
 
   You may use this file under the terms of BSD license as follows:
@@ -27,22 +27,48 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef RULEHELPER_H
-#define RULEHELPER_H
+#ifndef RANDOMHELPER_H
+#define RANDOMHELPER_H
 
-#include "../../core/gameboard.h"
+#include <random>
+#include <QVector>
+#include <QThread>
+#include <QTime>
+#include <QDate>
 
-namespace RuleHelper {
-struct possibleMove {
-    int x;
-    int y;
-    bool possible;
-};
+namespace RandomHelper {
+static bool random_initialised = false;
+static std::mt19937 rnd;
+static std::uniform_int_distribution<int> place_distribution(0, 7);
 
-bool isFrontierDisc(Gameboard board, int x, int y);
-bool canTakeCorner(Gameboard board, int player);
-bool canGetZeroDiscs(Gameboard board, int player);
-possibleMove getPossibleTurn(Gameboard board, int player);
+inline void initialise()
+{
+    if(!random_initialised)
+    {
+        std::random_device random_device;
+        QVector<int> seed_vector;
+        seed_vector.reserve(4);
+        seed_vector << random_device();
+        seed_vector << QTime(0,0,0).msecsTo(QTime::currentTime());
+        seed_vector << QDate::currentDate().dayOfYear();
+        seed_vector << QDate::currentDate().year();
+        std::seed_seq seed(seed_vector.begin(), seed_vector.end());
+        rnd.seed(seed);
+        random_initialised = true;
+    }
 }
 
-#endif // RULEHELPER_H
+inline int random(int low, int high)
+{
+    std::uniform_int_distribution<int> distribution(low, high);
+    return distribution(rnd);
+}
+
+inline int random_place()
+{
+    return place_distribution(rnd);
+}
+}
+
+#endif // RANDOMHELPER_H
+

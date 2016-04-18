@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 Marcus Soll
+  Copyright (C) 2014,2016 Marcus Soll
   All rights reserved.
 
   You may use this file under the terms of BSD license as follows:
@@ -28,6 +28,10 @@
 */
 
 #include "staticruleaiplayer.h"
+
+#include "../core/commons.h"
+
+// Rules
 #include "../player/rules/greedyrule.h"
 #include "../player/rules/openingrule.h"
 #include "../player/rules/endgamerule.h"
@@ -35,7 +39,6 @@
 #include "../player/rules/minimiseopponentmovementrule.h"
 #include "../player/rules/maximiseownmovementrule.h"
 #include "../player/rules/fewerfrontierdiscsrule.h"
-#include <QDebug>
 
 StaticRuleAIPlayer::StaticRuleAIPlayer(QObject *parent) :
     Player(parent)
@@ -82,12 +85,12 @@ void StaticRuleAIPlayer::doTurn(Gameboard board, int player)
     }
 
     // If everything fails do a greedy rule
-    qWarning() << "ERROR: Did not find any rule, using default \"Greedy Rule\"";
+    REVERSI_WARNING_MSG("Did not find any rule, using default \"Greedy Rule\"");
     GreedyRule rule;
     if(!rule.applicable(board,player))
     {
         emit sendMessage(tr("Static Rule AI hasn't any rules to apply..."));
-        qCritical() << "CRITICAL ERROR in " __FILE__ << " " << __LINE__ << ": Static Rule AI has no rule to apply";
+        REVERSI_ERROR_MSG("Static Rule AI has no rule to apply");
         return;
     }
     QObject::connect(&rule,SIGNAL(turn(int,int)),this,SLOT(getTurn(int,int)));
@@ -98,6 +101,9 @@ void StaticRuleAIPlayer::doTurn(Gameboard board, int player)
 
 void StaticRuleAIPlayer::humanInput(int x, int y)
 {
+    // Do nothing on human input
+    Q_UNUSED(x)
+    Q_UNUSED(y)
 }
 
 void StaticRuleAIPlayer::getTurn(int x, int y)

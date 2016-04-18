@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 Marcus Soll
+  Copyright (C) 2014,2016 Marcus Soll
   All rights reserved.
 
   You may use this file under the terms of BSD license as follows:
@@ -31,6 +31,7 @@
 #define CONTROLAIPLAYER_H
 
 #include "player.h"
+
 #include <QList>
 
 class ControlAIPlayer;
@@ -48,8 +49,6 @@ public slots:
     virtual void humanInput(int x, int y);
 
 private:
-    int inline opponent(int player);
-
     bool filter(int x, int y, Gameboard board, int player);
 
     void functionFindSleepers(Gameboard board, int player);

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 Marcus Soll
+  Copyright (C) 2014,2016 Marcus Soll
   All rights reserved.
 
   You may use this file under the terms of BSD license as follows:
@@ -28,12 +28,13 @@
 */
 
 #include "randomaiplayer.h"
-#include <QTime>
+
+#include "../core/randomhelper.h"
 
 RandomAIPlayer::RandomAIPlayer(QObject *parent) :
     Player(parent)
 {
-    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+    RandomHelper::initialise();
 }
 
 bool RandomAIPlayer::isHuman()
@@ -43,7 +44,7 @@ bool RandomAIPlayer::isHuman()
 
 void RandomAIPlayer::doTurn(Gameboard board, int player)
 {
-    int random = qrand()%10;
+    int random = RandomHelper::random(0,9);
 
     if(random == 0)
     {
@@ -59,8 +60,8 @@ void RandomAIPlayer::doTurn(Gameboard board, int player)
         emit sendMessage(s);
     }
 
-    int x = qrand()%8;
-    int y = qrand()%8;
+    int x = RandomHelper::random_place();
+    int y = RandomHelper::random_place();
     int xstart = x;
     int ystart = y;
 
@@ -79,9 +80,12 @@ void RandomAIPlayer::doTurn(Gameboard board, int player)
         x = (x+1)%8;
     }while(x != xstart);
 
-    emit turn(qrand()%8, qrand()%8);
+    emit turn(RandomHelper::random_place(), RandomHelper::random_place());
 }
 
 void RandomAIPlayer::humanInput(int x, int y)
 {
+    // Do nothing on human input
+    Q_UNUSED(x)
+    Q_UNUSED(y)
 }

@@ -10,6 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = desktop-reversi
 TEMPLATE = app
+CONFIG += c++11
 
 release {
     DEFINES += QT_NO_DEBUG_OUTPUT
@@ -54,7 +55,8 @@ SOURCES += src/main.cpp\
     src/player/rules/fewerfrontierdiscsrule.cpp \
     src/player/rules/endgamerule.cpp \
     src/player/rules/cornerrule.cpp \
-    src/player/neuralnetworkaiplayer.cpp
+    src/player/neuralnetworkaiplayer.cpp \
+    src/player/montecarloplayer.cpp
 
 HEADERS  += src/ui/board.h \
     src/core/gamemaster.h \
@@ -95,7 +97,10 @@ HEADERS  += src/ui/board.h \
     src/player/rules/fewerfrontierdiscsrule.h \
     src/player/rules/endgamerule.h \
     src/player/rules/cornerrule.h \
-    src/player/neuralnetworkaiplayer.h
+    src/player/neuralnetworkaiplayer.h \
+    src/core/commons.h \
+    src/core/randomhelper.h \
+    src/player/montecarloplayer.h
 
 FORMS += \
     src/ui/gameconfiguration.ui \

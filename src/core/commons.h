@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014,2015,2016 Marcus Soll
+  Copyright (C) 2016 Marcus Soll
   All rights reserved.
 
   You may use this file under the terms of BSD license as follows:
@@ -27,22 +27,21 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef RULEHELPER_H
-#define RULEHELPER_H
 
-#include "../../core/gameboard.h"
+#ifndef COMMONS
+#define COMMONS
 
-namespace RuleHelper {
-struct possibleMove {
-    int x;
-    int y;
-    bool possible;
-};
+#include <QDebug>
 
-bool isFrontierDisc(Gameboard board, int x, int y);
-bool canTakeCorner(Gameboard board, int player);
-bool canGetZeroDiscs(Gameboard board, int player);
-possibleMove getPossibleTurn(Gameboard board, int player);
+#define REVERSI_DEBUG_MSG(x) qDebug() << "DEBUG in" << Q_FUNC_INFO << ":" << x
+#define REVERSI_WARNING_MSG(x) qWarning() << "ERROR in" << Q_FUNC_INFO << ":" << x
+#define REVERSI_ERROR_MSG(x) qCritical() << "FATAL ERROR in" << Q_FUNC_INFO << ":" << x
+
+namespace ReversiCommons {
+inline int opponent(int player)
+{
+    return player==1?2:1;
 }
+}
+#endif // COMMONS
 
-#endif // RULEHELPER_H

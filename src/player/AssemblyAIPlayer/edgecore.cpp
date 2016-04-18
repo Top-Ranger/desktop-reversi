@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 Marcus Soll
+  Copyright (C) 2014,2016 Marcus Soll
   All rights reserved.
 
   You may use this file under the terms of BSD license as follows:
@@ -28,7 +28,9 @@
 */
 
 #include "edgecore.h"
+
 #include "assemblyaihelper.h"
+#include "../../core/commons.h"
 
 namespace {
 
@@ -93,7 +95,7 @@ bool canPlayEdge(Gameboard board, int player)
 
 } // End namespace
 
-using AssemblyAI::opponent;
+using ReversiCommons::opponent;
 
 EdgeCore::EdgeCore()
 {

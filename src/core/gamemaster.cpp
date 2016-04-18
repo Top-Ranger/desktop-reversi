@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 Marcus Soll
+  Copyright (C) 2014,2015,2016 Marcus Soll
   All rights reserved.
 
   You may use this file under the terms of BSD license as follows:
@@ -28,6 +28,10 @@
 */
 
 #include "gamemaster.h"
+
+#include "commons.h"
+
+// player
 #include "../player/humanplayer.h"
 #include "../player/randomaiplayer.h"
 #include "../player/greedyaiplayer.h"
@@ -39,7 +43,7 @@
 #include "../player/controlaiplayer.h"
 #include "../player/assemblyaiplayer.h"
 #include "../player/neuralnetworkaiplayer.h"
-#include <QDebug>
+#include "../player/montecarloplayer.h"
 
 Gamemaster::Gamemaster(QObject *parent) :
     QObject(parent),
@@ -105,6 +109,10 @@ bool Gamemaster::initialise(QString player1, QString player2, int bonus)
     {
         _player[0] = new NeuralNetworkAIPlayer(this);
     }
+    else if(player1 == "Monte Carlo AI")
+    {
+        _player[0] = new MonteCatloPlayer(this);
+    }
     else
     {
         return false;
@@ -159,6 +167,10 @@ bool Gamemaster::initialise(QString player1, QString player2, int bonus)
     {
         _player[1] = new NeuralNetworkAIPlayer(this);
     }
+    else if(player2 == "Monte Carlo AI")
+    {
+        _player[1] = new MonteCatloPlayer(this);
+    }
     else
     {
         cleanup();
@@ -182,7 +194,7 @@ void Gamemaster::getInput(int x, int y)
 {
     if(!_initialised)
     {
-        qCritical() << "FATAL ERROR in " __FILE__ << " " << __LINE__ << ": Using Gamemaster without initialising it";
+        REVERSI_ERROR_MSG("Using Gamemaster without initialising it");
         return;
     }
     emit humanInput(x, y);
@@ -218,7 +230,7 @@ void Gamemaster::turn(int x, int y)
 {
     if(!_initialised)
     {
-        qCritical() << "FATAL ERROR in " __FILE__ << " " << __LINE__ << ": Using Gamemaster without initialising it";
+        REVERSI_ERROR_MSG("Using Gamemaster without initialising it");
         return;
     }
 
@@ -252,7 +264,7 @@ void Gamemaster::startGame()
 {
     if(!_initialised)
     {
-        qCritical() << "FATAL ERROR in " __FILE__ << " " << __LINE__ << ": Using Gamemaster without initialising it";
+        REVERSI_ERROR_MSG("Using Gamemaster without initialising it");
         return;
     }
 
@@ -273,7 +285,7 @@ int Gamemaster::getOwner(int x, int y)
 {
     if(!_initialised)
     {
-        qCritical() << "FATAL ERROR in " __FILE__ << " " << __LINE__ << ": Using Gamemaster without initialising it";
+        REVERSI_ERROR_MSG("Using Gamemaster without initialising it");
         return 0;
     }
     return _board->owner(x, y);
@@ -283,7 +295,7 @@ int Gamemaster::pointsPlayer1()
 {
     if(!_initialised)
     {
-        qCritical() << "FATAL ERROR in " __FILE__ << " " << __LINE__ << ": Using Gamemaster without initialising it";
+        REVERSI_ERROR_MSG("Using Gamemaster without initialising it");
         return 0;
     }
 
@@ -294,7 +306,7 @@ int Gamemaster::pointsPlayer2()
 {
     if(!_initialised)
     {
-        qCritical() << "FATAL ERROR in " __FILE__ << " " << __LINE__ << ": Using Gamemaster without initialising it";
+        REVERSI_ERROR_MSG("Using Gamemaster without initialising it");
         return 0;
     }
 

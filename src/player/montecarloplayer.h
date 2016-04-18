@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014,2015,2016 Marcus Soll
+  Copyright (C) 2016 Marcus Soll
   All rights reserved.
 
   You may use this file under the terms of BSD license as follows:
@@ -27,22 +27,23 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef RULEHELPER_H
-#define RULEHELPER_H
+#ifndef MONTECARLOPLAYER_H
+#define MONTECARLOPLAYER_H
 
-#include "../../core/gameboard.h"
+#include "player.h"
 
-namespace RuleHelper {
-struct possibleMove {
-    int x;
-    int y;
-    bool possible;
+class MonteCatloPlayer : public Player
+{
+    Q_OBJECT
+public:
+    explicit MonteCatloPlayer(QObject *parent = 0);
+    virtual bool isHuman();
+    virtual void doTurn(Gameboard board, int player);
+
+    static const int NUM_RUNS = 100;
+
+public slots:
+    virtual void humanInput(int x, int y);
 };
 
-bool isFrontierDisc(Gameboard board, int x, int y);
-bool canTakeCorner(Gameboard board, int player);
-bool canGetZeroDiscs(Gameboard board, int player);
-possibleMove getPossibleTurn(Gameboard board, int player);
-}
-
-#endif // RULEHELPER_H
+#endif // MONTECARLOPLAYER_H

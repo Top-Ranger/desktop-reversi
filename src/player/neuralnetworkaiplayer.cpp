@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014,2015 Marcus Soll
+  Copyright (C) 2014,2015,2016 Marcus Soll
   All rights reserved.
 
   You may use this file under the terms of BSD license as follows:
@@ -27,14 +27,18 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include "neuralnetworkaiplayer.h"
+
+#include "../core/randomhelper.h"
+#include "../core/commons.h"
+
 #include <QGenericMatrix>
-#include <QDebug>
 #include <limits>
 #include <QFile>
 #include <QTextStream>
-#include <QTime>
 #include <cmath>
-#include "neuralnetworkaiplayer.h"
+
+using ReversiCommons::opponent;
 
 const char *NeuralNetworkAIPlayer::_pathInputToHidden1 = ":NeuralNetworkAIPlayer/inputToHidden1.txt";
 const char *NeuralNetworkAIPlayer::_pathHidden1ToHidden2 = ":NeuralNetworkAIPlayer/hidden1ToHidden2.txt";
@@ -43,11 +47,6 @@ const char *NeuralNetworkAIPlayer::_pathHidden2ToOutput = ":NeuralNetworkAIPlaye
 namespace {
 float sigmoid(float input){
     return 1 / (1 + exp(-input));
-}
-
-int opponent(int player)
-{
-    return player==1?2:1;
 }
 
 bool opponentCanPlayCorner(Gameboard board, int x, int y, int player)
@@ -68,7 +67,7 @@ NeuralNetworkAIPlayer::NeuralNetworkAIPlayer(QObject *parent) :
     _hidden2ToOutput()
 {
 
-    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+    RandomHelper::initialise();
 
     for(int i = 0; i < 64; ++i)
     {
@@ -182,7 +181,7 @@ void NeuralNetworkAIPlayer::doTurn(Gameboard board, int player)
     for(int i = 0; i < 64; ++i)
     {
         float value = output(0,i);
-        switch(qrand()%3)
+        switch(RandomHelper::random(0,2))
         {
         case 1:
             value *= random_fachtor;
@@ -207,7 +206,7 @@ void NeuralNetworkAIPlayer::doTurn(Gameboard board, int player)
     }
     if(turn_save != -1)
     {
-         emit turn(turn_save%8, turn_save/8);
+        emit turn(turn_save%8, turn_save/8);
     }
     else if(turn_save_bad != -1)
     {
@@ -215,10 +214,13 @@ void NeuralNetworkAIPlayer::doTurn(Gameboard board, int player)
     }
     else
     {
-        qCritical() << "CRITICAL ERROR in " __FILE__ << " " << __LINE__ << ": Neural Network AI has no play";
+        REVERSI_ERROR_MSG("Neural Network AI has no play");
     }
 }
 
 void NeuralNetworkAIPlayer::humanInput(int x, int y)
 {
+    // Do nothing on human input
+    Q_UNUSED(x)
+    Q_UNUSED(y)
 }

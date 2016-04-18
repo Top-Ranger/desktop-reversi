@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014,2015 Marcus Soll
+  Copyright (C) 2014,2015,2016 Marcus Soll
   All rights reserved.
 
   You may use this file under the terms of BSD license as follows:
@@ -28,15 +28,17 @@
 */
 
 #include "minimiseopponentmovementrule.h"
+
 #include "rulehelper.h"
-#include <QDebug>
-#include <QTime>
+#include "../../core/randomhelper.h"
+#include "../../core/commons.h"
 
 using RuleHelper::canTakeCorner;
 using RuleHelper::canGetZeroDiscs;
-using RuleHelper::opponent;
 using RuleHelper::getPossibleTurn;
 using RuleHelper::possibleMove;
+
+using ReversiCommons::opponent;
 
 const int MinimiseOpponentMovementRule::_borderMoves;
 
@@ -46,7 +48,7 @@ MinimiseOpponentMovementRule::MinimiseOpponentMovementRule(QObject *parent) :
     _y(-1),
     _asked(false)
 {
-    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+    RandomHelper::initialise();
 }
 
 bool MinimiseOpponentMovementRule::applicable(Gameboard board, int player)
@@ -76,7 +78,7 @@ void MinimiseOpponentMovementRule::doTurn(Gameboard board, int player)
         }
         else
         {
-            qCritical() << "FATAL ERROR in " __FILE__ << " " << __LINE__ << ": No possible move";
+            REVERSI_ERROR_MSG(": No possible move");
         }
     }
 }
@@ -89,8 +91,8 @@ QString MinimiseOpponentMovementRule::name()
 bool MinimiseOpponentMovementRule::calculateMove(Gameboard board, int player)
 {
     int min = 100;
-    int x = qrand()%8;
-    int y = qrand()%8;
+    int x = RandomHelper::random_place();
+    int y = RandomHelper::random_place();
     int xstart = x;
     int ystart = y;
     int xmin = -1;

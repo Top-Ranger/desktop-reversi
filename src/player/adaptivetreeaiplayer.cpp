@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 Marcus Soll
+  Copyright (C) 2014,2016 Marcus Soll
   All rights reserved.
 
   You may use this file under the terms of BSD license as follows:
@@ -28,8 +28,13 @@
 */
 
 #include "adaptivetreeaiplayer.h"
-#include <QTime>
+
+#include "../core/randomhelper.h"
+#include "../core/commons.h"
+
 #include <limits>
+
+using ReversiCommons::opponent;
 
 AdaptiveTreeAIPlayer::AdaptiveTreeAIPlayer(QObject *parent) :
     Player(parent),
@@ -42,7 +47,7 @@ AdaptiveTreeAIPlayer::AdaptiveTreeAIPlayer(QObject *parent) :
     _lonely(1),
     _oldBoard()
 {
-    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+    RandomHelper::initialise();
 }
 
 bool AdaptiveTreeAIPlayer::isHuman()
@@ -53,14 +58,14 @@ bool AdaptiveTreeAIPlayer::isHuman()
 void AdaptiveTreeAIPlayer::doTurn(Gameboard board, int player)
 {
     float max = -1048576;
-    int x = qrand()%8;
-    int y = qrand()%8;
+    int x = RandomHelper::random_place();
+    int y = RandomHelper::random_place();
     int xstart = x;
     int ystart = y;
     int xmax = -1;
     int ymax = -1;
     Gameboard testboard;
-    int composure = qrand() % _composure;
+    int composure = RandomHelper::random(0,_composure-1);
 
     if(!_firstBoard)
     {
@@ -129,6 +134,9 @@ void AdaptiveTreeAIPlayer::doTurn(Gameboard board, int player)
 
 void AdaptiveTreeAIPlayer::humanInput(int x, int y)
 {
+    // Do nothing on human input
+    Q_UNUSED(x)
+    Q_UNUSED(y)
 }
 
 float AdaptiveTreeAIPlayer::buildTree(Gameboard board, int player, int I, int old, int opponentOld, int depth)
@@ -205,11 +213,6 @@ float AdaptiveTreeAIPlayer::buildTree(Gameboard board, int player, int I, int ol
     {
         return advantage / n;
     }
-}
-
-int inline AdaptiveTreeAIPlayer::opponent(int player)
-{
-    return player==1?2:1;
 }
 
 float AdaptiveTreeAIPlayer::calculateScore(Gameboard board, int I, int change, int opponentChange)

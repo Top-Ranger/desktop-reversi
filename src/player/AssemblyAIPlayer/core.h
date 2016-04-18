@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 Marcus Soll
+  Copyright (C) 2014,2016 Marcus Soll
   All rights reserved.
 
   You may use this file under the terms of BSD license as follows:
@@ -31,6 +31,7 @@
 #define CORE_H
 
 #include "../../core/gameboard.h"
+
 #include <QString>
 
 class Core
@@ -45,8 +46,8 @@ public:
     virtual QString name() const = 0;
 
 protected:
-    static const float _factorSmall = 1.1;
-    static const float _factorLarge = 1.2;
+    static constexpr float _factorSmall = 1.1;
+    static constexpr float _factorLarge = 1.2;
 
     static const int _mistrustSmall = 1;
     static const int _mistrustLarge = 3;

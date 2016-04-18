@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 Marcus Soll
+  Copyright (C) 2014,2016 Marcus Soll
   All rights reserved.
 
   You may use this file under the terms of BSD license as follows:
@@ -28,7 +28,8 @@
 */
 
 #include "insanecore.h"
-#include <QTime>
+
+#include "../../core/randomhelper.h"
 
 int InsaneCore::_counter = 0;
 
@@ -36,17 +37,26 @@ InsaneCore::InsaneCore() :
     Core(),
     _id(++_counter)
 {
-    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+    RandomHelper::initialise();
 }
 
 bool InsaneCore::retirement(Gameboard board, int player)
 {
-    return (qrand()%2 == 0);
+    // Random things don't need parameter
+    Q_UNUSED(board)
+    Q_UNUSED(player)
+
+    return (RandomHelper::random(0,1));
 }
 
 int InsaneCore::mistrust(float const* const* const vote, Gameboard board, int player)
 {
-    return (qrand()%60 == 0)?Core::_factorSmall:Core::_noMistrust;
+    // Random things don't need parameter
+    Q_UNUSED(vote)
+    Q_UNUSED(board)
+    Q_UNUSED(player)
+
+    return RandomHelper::random(0,60)?Core::_factorSmall:Core::_noMistrust;
 }
 
 void InsaneCore::propose(float ** const vote, Gameboard board, int player)
@@ -55,8 +65,8 @@ void InsaneCore::propose(float ** const vote, Gameboard board, int player)
     do{
         for(int i = 0; i < 10 && count < 3; ++i)
         {
-            int x = qrand()%8;
-            int y = qrand()%8;
+            int x = RandomHelper::random_place();
+            int y = RandomHelper::random_place();
             if(board.play(x,y,player,true))
             {
                 vote[x][y] = 1;
@@ -68,13 +78,17 @@ void InsaneCore::propose(float ** const vote, Gameboard board, int player)
 
 void InsaneCore::correct(float ** const vote, Gameboard board, int player)
 {
+    // Random things don't need parameter
+    Q_UNUSED(board)
+    Q_UNUSED(player)
+
     for(int x = 0; x < 8; ++x)
     {
         for(int y = 0; y < 8; ++y)
         {
             if(vote[x][y] != 0)
             {
-                switch(qrand()%8)
+                switch(RandomHelper::random(0,7))
                 {
                 case 0:
                     vote[x][y] *= Core::_factorSmall;

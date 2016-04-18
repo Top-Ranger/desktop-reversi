@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 Marcus Soll
+  Copyright (C) 2014,2016 Marcus Soll
   All rights reserved.
 
   You may use this file under the terms of BSD license as follows:
@@ -28,13 +28,18 @@
 */
 
 #include "assemblyaihelper.h"
-#include <QDebug>
+
+#include "../../core/randomhelper.h"
+#include "../../core/commons.h"
+
+using ReversiCommons::opponent;
 
 namespace {
 bool findOneFreePlace(float ** const vote, Gameboard board, int player, bool ignoreOpponentCanGetCorner=true)
 {
-    int x = qrand()%8;
-    int y = qrand()%8;
+    RandomHelper::initialise();
+    int x = RandomHelper::random_place();
+    int y = RandomHelper::random_place();
     int xstart = x;
     int ystart = y;
 
@@ -73,7 +78,7 @@ bool findOneFreePlace(float ** const vote, Gameboard board, int player, bool ign
                     }
                     Gameboard testboard = board;
                     board.play(x,y,player,false);
-                    if(!(testboard.play(0,0,AssemblyAI::opponent(player),true) || testboard.play(0,7,AssemblyAI::opponent(player),true) || testboard.play(7,0,AssemblyAI::opponent(player),true) || testboard.play(7,7,AssemblyAI::opponent(player),true)))
+                    if(!(testboard.play(0,0,opponent(player),true) || testboard.play(0,7,opponent(player),true) || testboard.play(7,0,opponent(player),true) || testboard.play(7,7,opponent(player),true)))
                     {
                         vote[x][y] = 1;
                         return true;
@@ -131,7 +136,7 @@ void AssemblyAI::ensureOnePossibleMove(float ** const vote, Gameboard board, int
     {
         return;
     }
-    qCritical() << "FATAL ERROR in " __FILE__ << " " << __LINE__ << ": No possible move!";
+    REVERSI_ERROR_MSG("No possible move!");
 }
 
 void AssemblyAI::ensureNoIllegalMove(float ** const vote, Gameboard board, int player)

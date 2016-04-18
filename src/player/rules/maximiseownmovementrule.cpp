@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014,2015 Marcus Soll
+  Copyright (C) 2014,2015,2016 Marcus Soll
   All rights reserved.
 
   You may use this file under the terms of BSD license as follows:
@@ -28,16 +28,17 @@
 */
 
 #include "maximiseownmovementrule.h"
+
+#include "../../core/randomhelper.h"
+#include "../../core/commons.h"
 #include "rulehelper.h"
-#include <QDebug>
-#include <QTime>
 
 using RuleHelper::canTakeCorner;
 using RuleHelper::canGetZeroDiscs;
-using RuleHelper::opponent;
 using RuleHelper::getPossibleTurn;
 using RuleHelper::possibleMove;
 
+using ReversiCommons::opponent;
 
 const int MaximiseOwnMovementRule::_borderMoves;
 
@@ -47,7 +48,7 @@ MaximiseOwnMovementRule::MaximiseOwnMovementRule(QObject *parent) :
     _y(-1),
     _asked(false)
 {
-    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+    RandomHelper::initialise();
 }
 
 bool MaximiseOwnMovementRule::applicable(Gameboard board, int player)
@@ -77,7 +78,7 @@ void MaximiseOwnMovementRule::doTurn(Gameboard board, int player)
         }
         else
         {
-            qCritical() << "FATAL ERROR in " __FILE__ << " " << __LINE__ << ": No possible move";
+            REVERSI_ERROR_MSG("No possible move");
         }
     }
 }
@@ -90,8 +91,8 @@ QString MaximiseOwnMovementRule::name()
 bool MaximiseOwnMovementRule::calculateMove(Gameboard board, int player)
 {
     int max = -1;
-    int x = qrand()%8;
-    int y = qrand()%8;
+    int x = RandomHelper::random_place();
+    int y = RandomHelper::random_place();
     int xstart = x;
     int ystart = y;
     int xmax = -1;
